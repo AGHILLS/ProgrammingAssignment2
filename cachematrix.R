@@ -1,34 +1,46 @@
-## Put comments here that give an overall description of what your
-## functions do
+## A set of functions that creates a matrix, and calculates it's inverse and 
+## stores it in a "cache" for fast retrieval.
 
-## Write a short comment describing this function
+
+## This matrix function returns a list consisting of
+
+## a function to set the value of the matrix
+## a function to retrieve the value of the matrix
+## a function to store the value of the inverse
+## a function to retrive the value of the inverse
+
+## Together this list acts as if it were a matrix witrh the added advantage of
+## having the inverse stored when it is calculated and being available for fast
+## retrival
 
 makeCacheMatrix <- function(x = matrix()) {
-    m <- NULL
+    inv <- NULL
     set <- function(y) {
         x <<- y
-        m <<- NULL
+        inv <<- NULL  #sets the inv to NULL on setting a new value
     }
     get <- function() x
-    setmean <- function(mean) m <<- mean
-    getmean <- function() m
-    list(set = set, get = get,
-         setmean = setmean,
-         getmean = getmean)
+    setinverse <- function(inverse) inv <<- inverse
+    getinverse <- function() inv
+    
+    list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## Return the inverse of a makeCacheMatrix "matrix".
+## It tests if a value of the inverse is already stored in the "cache"
+## If so it returns the value stored in the "cache"
+## If not, it calculates the inverse directly as well as stores the value.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-    m <- x$getmean()
-    if(!is.null(m)) {
-        message("getting cached data")
-        return(m)
+        
+    inv <- x$getinverse()
+    if(!is.null(inv)) {
+        # Returns the inverse from "cache" directly.
+        return(inv)
     }
     data <- x$get()
-    m <- mean(data, ...)
-    x$setmean(m)
-    m
+    inv <- solve(data, ...) # Calculates the inverse.
+    x$setinverse(inv) # Stores the inverse.
+    inv # Returns the cache.
 }
